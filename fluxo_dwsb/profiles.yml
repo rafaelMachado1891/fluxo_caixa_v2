@@ -1,0 +1,13 @@
+fluxo_dwsb:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      host: "{{ env_var('HOST') }}"
+      user: "{{ env_var('USER') }}"
+      pass: "{{ env_var('PASSWORD') }}"
+      port: "{{ env_var('PORT') | int }}"
+      dbname: "{{ env_var('DBNAME') }}"
+      schema: dwsb
+      threads: 4
+      sslmode: require

@@ -1,0 +1,180 @@
+version: 2
+
+models:
+  - name: stg_titulos
+    description: "tabela dos lancamentos dos titulos"
+    columns: 
+         - name: numero_titulo
+           description: 'ID do titulo de pagamento cadastrado no sistema de origem'
+           data_type: TEXT
+           tests:
+            - not_null  # Garante que não há valores nulos 
+
+         - name: serie
+           description: 'numero de serie do documento'
+           data_type: TEXT
+
+         - name: numero_da_parcela
+           description: 'coluna que representa o numero da parcela de um titulo'
+           data_type: INTEGER
+           tests:
+            - not_null
+
+         - name: data_emissao
+           description: 'data de cadastro no sistema de origem'
+           data_type: DATE
+           tests:
+            - not_null
+
+         - name: vencimento
+           description: 'data de vencimento do titulo'
+           data_type: DATE
+           tests:
+            - not_null
+
+         - name: valor_titulo
+           description: 'valor monetario do titulo'
+           data_type: DECIMAL
+           tests:
+            - not_null
+            - valores_positivos
+
+         - name: tipo_pagamento
+           description: 'indica se o registro é uma entrada ou uma saida'
+           data_type: TEXT
+           tests:
+            - not_null
+
+         - name: instituicao
+           description: 'instituicao de pagamento'
+
+         - name: situacao_titulo
+           description: 'indica a situacao do titulo (pago/pendente/parcial)'
+           data_type: INTEGER
+           tests:
+            - not_null
+
+         - name: conta_contabil_credito
+           description: 'identificador da conta contabil'
+           data_type: INTEGER
+
+         - name: conta_contabil_debito
+           description: 'identificador da conta contabil'
+           data_type: INTEGER
+
+         - name: id_cliente
+           description: 'identificar unico do cliente'
+           data_type: INTEGER
+
+         - name: data_lancamento
+           description: 'data e hora do lancamento do registro criado pelo sistema de origem'
+           data_type: DATE
+
+  - name: stg_plano_contas
+    description: "tabela que contem o plano de contas"
+    columns:
+         - name: codigo
+           description: 'identificador unico da conta contabil'
+           data_type: INTEGER
+
+         - name: codigo_conta_contabil
+           description: "codigo hierarquico da conta contabil"
+           data_type: TEXT
+
+         - name: conta_contabil
+           description: "descricao da conta contabil"
+           data_type: TEXT
+
+         - name: data_inclusao
+           description: "data de inclusao no sistema de origem"
+           data_type: DATE
+
+  - name: stg_instituicoes
+    description: 'tabela das instituicoes financeiras'
+    columns:
+         - name: id_banco
+           description: "identificador unico do cadastro de instituicoes"
+           data_type: INTEGER
+
+         - name: razao_social
+           description: "nome da instituicoes de pagamento"
+           data_type: TEXT
+
+  - name: stg_lancamentos_fluxo
+    description: 'tabela que contem os lancamentos de fluxo de caixa'
+    columns:
+         - name: numero_titulo
+           description: 'numero do titulo vinculado a tabela titulos'
+           data_type: TEXT
+
+         - name: serie
+           description: 'numero de serie do documento'
+           data_type: TEXT
+
+         - name: numero_da_parcela
+           description: 'coluna que representa o numero da parcela lancada no fluxo'
+           data_type: INTEGER
+
+         - name: tipo_pagamento
+           description: 'coluna que indica se o lancamento e de entrada ou saida'
+           data_type: TEXT 
+          
+         - name: data_recebimento
+           description: 'data de lancamento do valor no fluxo'
+           data_type: DATE
+
+         - name: valor
+           description: 'valor do lancamento'
+           data_type: DECIMAL
+           tests:
+            - not_null
+            - valores_positivos: 
+                column_name: valor_titulo
+        
+         - name: conta_contabil_credito
+           description: 'identificador da conta contabil'
+           data_type: INTEGER
+
+         - name: conta_contabil_debito
+           description: 'identificador da conta contabil'
+           data_type: INTEGER
+
+         - name: id_cliente
+           description: 'identificador do cliente'
+           data_type: INTEGER
+         
+         - name: instituicao
+           description: 'identificador da instituicao'
+           data_type: INTEGER
+
+         - name: data_lancamento
+           description: 'data de lancamento do registro no sistema de origem, registro igual a coluna data de recebimento'
+           data_type: DATE
+
+  - name: stg_clientes
+    description: 'tabela de clintes'
+    columns:
+         - name: id_cliente
+           description: 'identificador unico do cliente'
+           data_type: INTEGER
+           tests:
+            - not_null
+
+         - name: razao_social
+           description: 'razao social do cliente'
+           data_type: TEXT
+      
+  - name: stg_saldo_inicial
+    description: 'tabela que cotem o saldo inicial de caixa'
+    columns:
+          - name: data_inicial
+            description: 'data do saldo de caixa'
+            data_type: DATE
+
+          - name: saldo
+            description: 'saldo inicial de caixa'
+            data_type: DECIMAL
+            tests:
+             - valores_positivos: 
+                column_name: valor_titulo
+          

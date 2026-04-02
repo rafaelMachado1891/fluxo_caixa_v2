@@ -1,0 +1,186 @@
+version: 2
+
+sources:
+  - name: fluxo_db
+    schema: public
+    tables: 
+
+      - name: tbl_fluxo
+        description: tabela que contem os dados de lançamento dos titulos bancarios no erp de origem
+        columns:
+         - name: numero_titulo
+           description: 'ID do titulo de pagamento cadastrado no sistema de origem'
+           data_type: TEXT
+           tests:
+            - not_null  # Garante que não há valores nulos 
+
+         - name: tipo_credor
+           description: 'identificador do tipo de nota fiscal o titulo é proveniente ex: "entrada de nota fiscal", "saida de nota fiscal" ou "conhecimento de frete" verificar utilidade da coluna '
+           data_type: INTEGER
+           tests:
+            - not_null
+
+         - name: serie
+           description: 'numero da parcela do documento'
+           data_type: INTEGER
+
+         - name: n 
+           description: 'coluna que representa o numero da parcela de um titulo'
+           data_type: INTEGER
+           
+         - name: id_cliente
+           description: 'identificar unico do cliente'
+           data_type: TEXT
+           tests:
+            - not_null
+
+         - name: "tipo_pagamento"
+           description: 'meio de pagamento do titulo: "duplicata/ cartão/ carteira", verificar a utilidade da coluna'
+           data_type: TEXT
+
+         - name: "data_emissao" 
+           description: 'data de emissao do titulo'
+           data_type: DATE
+           tests: 
+            - not_null
+
+         - name: "vencimento"
+           description: 'data de vencimento do titulo'
+           data_type: DATE
+           tests:
+            - not_null
+
+         - name: "data_pagamento"
+           description: "data de pagamento do titulo"
+           data_type: DATE
+
+         - name: valor_titulo
+           description: 'valor monetario do titulo'
+           data_type: TEXT
+           tests:
+            - not_null
+
+         - name: "instituicao"
+           description: 'identificador da instituicao de pagamento exemplo: "banco" '
+           data_type: INTEGER
+
+         - name: situacao_titulo
+           description: 'marcacao identificando se titulo esta pago, pendente ou parcial ('')'
+           data_type: INTEGER
+           tests:
+            - not_null
+
+         - name: "conta_contabil_credito"
+           description: 'identificador da conta contabil de credito'
+           data_type: INTEGER
+
+         - name: "conta_contabil_debito"
+           description: 'identificador da conta contabil quando debito'
+           data_type: INTEGER
+
+         - name: "debito_descricao"
+           description: 'descricao da conta contabil'
+           data_type: TEXT
+
+         - name: "credito_descricao"
+           description: 'descricao da conta contabil'
+
+         - name: data_hora_lancamento
+           description: 'data e hora de registro do lancamento no sistema de origem'
+
+      - name: tbl_plano_contas
+        description: "plano de contas do sistema ERP"
+        columns: 
+          - name: codigo
+            description: "identificador unico da conta contábil"
+            data_type: INTEGER
+            tests:
+              - not_null
+
+          - name: codigo_conta
+            description: "hierarquia da conta contabil"
+            data_type: TEXT    
+
+          - name: descricao
+            description: descricao da conta contabil
+            data_type: TEXT
+
+          - name: DataInclusao
+            description: "data de inclusao do cadastro no sistema"
+            data_type: DATE
+
+      - name: tbl_instituicoes
+        description: 'tabela que contem as instituicoes de pagamento'
+        columns:
+          - name: codigo
+            description: "identificador unico do cadastro de instituicoes de pagamento"
+            data_type: INTEGER
+            tests:
+             - not_null
+
+          - name: razao
+            description: "razao social da instituicoes de pagamento"
+            data_type: TEXT
+            tests: 
+             - not_null
+
+      - name: tbl_lancamentos_fluxo
+        description: 'tabela que representa o fluxo de caixa criado no sistema de origem'
+        columns:
+          - name: Numtitulo
+            description: 'numero do titulo'
+
+          - name: Serie
+            description: 'numero de serie do documento'
+
+          - name: N 
+            description: 'numero da parcela do titulo'
+
+          - name: tipo
+            description: 'tipo de lancamento (debito/credito)'
+
+          - name: DataReceb
+            description: 'data de recebimento do lancamento'
+
+          - name: descricao
+            description: 'descricao do lancamento'
+          
+          - name: valor
+            description: 'valor do lancamento'
+            data_type: TEXT
+
+          - name: ContaContabil 
+            description: 'id da conta contabil quando credito'
+          
+          - name: ContaContabilDebito 
+            description: 'id da conta contabil quando debito'
+
+          - name: Tipo_C
+            description: 'tipo de credor do lancamento (entrada/Saida/conhecimento)'
+
+          - name: Codigo_C 
+            description: 'identificador do cliente'
+
+          - name: Instituicao
+            description: 'identificador da instituicao'
+          
+          - name: Numero
+            description: 'titulo correspondente na tabela titulos'
+      
+      - name: tbl_clientes
+        description: 'tabela de clientes'
+        columns:
+          - name: id_cliente
+            description: 'identificador unico do cliente'
+
+          - name: razao
+            description: 'razao social do cliente'
+        
+      - name: tbl_saldo_inicial
+        description: 'tabela que contem o saldo de caixa no inicio do período'
+        columns:
+          - name: DataMov
+            description: 'data base do saldo de caixa'
+
+          - name: saldo
+            description: 'valor registrado no periodo'            

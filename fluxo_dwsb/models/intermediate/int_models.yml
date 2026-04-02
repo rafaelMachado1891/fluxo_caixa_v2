@@ -1,0 +1,285 @@
+version: 2
+
+models:
+  - name: int_titulos
+    description: "tabela dos lancamentos dos titulos"
+    columns:
+      - name: numero_titulo
+        description: 'ID do titulo de pagamento cadastrado no sistema de origem'
+        data_type: TEXT
+        tests:
+          - not_null  
+
+      - name: serie
+        description: 'serie do titulo'
+        data_type: TEXT
+
+      - name: numero_da_parcela
+        description: 'coluna que representa o numero da parcela do titulo'
+
+      - name: data_emissao
+        description: 'data de cadastro no sistema de origem'
+        data_type: DATE
+        tests:
+          - not_null
+
+      - name: vencimento
+        description: 'data de vencimento do titulo'
+        data_type: DATE
+        tests:
+          - not_null
+
+      - name: valor_titulo
+        description: 'valor monetario do titulo'
+        data_type: DECIMAL
+        tests:
+          - not_null
+          - valores_positivos
+
+      - name: tipo_pagamento
+        description: 'indica se o registro é uma entrada ou uma saida'
+        data_type: TEXT
+        tests:
+          - not_null
+
+      - name: instituicao
+        description: 'instituicao de pagamento'
+        tests:
+          - not_null
+          - relationships:
+              arguments:               
+                to: ref('int_instituicoes')
+                field: instituicao
+
+      - name: situacao_titulo
+        description: 'indica a situacao do titulo (pago/pendente/parcial)'
+        data_type: TEXT
+        tests:
+          - not_null
+
+      - name: id_conta_contabil
+        description: 'identificador unico da conta contabil'
+        data_type: INTEGER
+        tests:
+          - not_null
+
+      - name: id_cliente
+        description: 'identificar unico do cliente'
+        data_type: INTEGER
+        tests:
+          - not_null
+
+  - name: int_plano_contas
+    description: "tabela que contem o plano de contas"
+    columns:
+      - name: id_conta_contabil
+        description: 'identificador unico da conta contabil'
+        data_type: INTEGER
+        tests:
+          - not_null
+
+      - name: conta_contabil
+        description: "hierarquia da conta contabil"
+        data_type: TEXT
+
+      - name: descricao_conta_contabil
+        description: "descricao da conta contabil"
+        data_type: TEXT
+
+  - name: int_instituicoes
+    description: 'tabela que contem as instituicoes de pagamento'
+    columns:
+      - name: id_banco
+        description: 'identificador unico da instituicao'
+        tests:
+          - not_null
+      
+      - name: razao_social
+        description: 'razao social da instituicao'
+
+  - name: int_clientes
+    description: 'tabela de clientes'
+    columns:
+      - name: id_cliente
+        description: 'identificador unico do cadastro de clientes'
+        data_type: INTEGER
+        tests:
+          - unique
+          - not_null
+
+      - name: razao_social 
+        description: 'razao social do terceiro'
+        data_type: TEXT
+        tests:
+          - not_null
+  
+  - name: int_lancamentos_fluxo
+    description: 'tabela de fluxo de caixa do sistema de origem, ela possui lançamentos automaticos
+      atraves de arquivos de remessa e retorno do id_banco e também lancametos manuais efetuados sem um titulo vinculado'
+    columns:
+      - name: numero_titulo
+        description: 'numero do titulo vinculado ao lancamento pode existir ou não quando lancamento manual'
+        data_type: TEXT
+        tests:
+          - not_null
+        
+      - name: serie
+        description: 'numero de serie do titulo foi efetuado tratamento de S/N (sem numero), quando não informado'
+        data_type: TEXT
+
+      - name: numero_da_parcela
+        description: 'representa o numero da parcela do lancamento quando 0 a parcela é unica'
+        data_type: INTEGER
+        tests:
+          - not_null
+      
+      - name: data_emissao
+        description: 'data de emissao do documento quando nao informado a data é a mesma do pagaemento'
+        data_type: DATE
+        tests:
+          - not_null
+      
+      - name: vencimento
+        description: 'data de vencimento do titulo, quando não informado o vencimento é igual ao pagamento'
+        data_type: DATE
+        tests:
+          - not_null
+      
+      - name: data_pagamento
+        description: 'data de pagamento do titulo'
+        data_type: DATE
+        tests:
+          - not_null
+
+      - name: valor_titulo
+        description: 'valor monetario do documento'
+        data_type: DECIMAL
+        tests:
+          - valores_positivos
+          - not_null
+
+      - name: tipo_pagamento
+        description: 'indica se o lancamento e de entrada ou saida'
+        data_type: TEXT
+        tests:
+          - not_null
+
+      - name: instituicao
+        description: 'identificador do codigo da instituicao financeira'
+        data_type: INTEGER
+        tests:
+          - not_null
+
+      - name: situacao_titulo
+        description: 'indica a situacao do titulo como pago'
+        data_type: TEXT
+        tests:
+         - not_null
+      
+      - name: id_conta_contabil
+        description: 'identificador do cliente'
+        data_type: INTEGER
+        tests:
+          - not_null
+        
+      - name: id_cliente
+        description: 'identificador do cliente'
+        data_type: 'INTEGER'
+        tests: 
+          - not_null
+
+  - name: int_lancamentos_consolidados
+    description: 'e uma tabela consolidada entre titulos e lancamentos diretos no fluxo de caixa'
+    columns:
+      - name: numero_titulo
+        description: 'numero do titulo vinculado ao lancamento'
+        data_type: TEXT
+        tests:
+          - not_null
+        
+      - name: serie
+        description: 'numero de serie do titulo foi efetuado tratamento de S/N (sem numero), quando não informado'
+        data_type: TEXT
+
+      - name: numero_da_parcela
+        description: 'representa o numero da parcela do lancamento quando 0 a parcela é unica'
+        data_type: INTEGER
+        tests:
+          - not_null
+      
+      - name: data_emissao
+        description: 'data de emissao do documento quando nao informado a data é a mesma do pagaemento'
+        data_type: DATE
+        tests:
+          - not_null
+      
+      - name: vencimento
+        description: 'data de vencimento do titulo, quando não informado o vencimento é igual ao pagamento'
+        data_type: DATE
+        tests:
+          - not_null
+      
+      - name: data_pagamento
+        description: 'data de pagamento do titulo'
+        data_type: DATE
+        tests:
+          - not_null
+
+      - name: valor_titulo
+        description: 'valor monetario do documento'
+        data_type: DECIMAL
+        tests:
+          - valores_positivos
+          - not_null
+
+      - name: tipo_pagamento
+        description: 'indica se o lancamento e de entrada ou saida'
+        data_type: TEXT
+        tests:
+          - not_null
+
+      - name: instituicao
+        description: 'identificador do codigo da instituicao financeira'
+        data_type: INTEGER
+        tests:
+          - not_null
+
+      - name: situacao_titulo
+        description: 'indica a situacao do titulo como pago'
+        data_type: TEXT
+        tests:
+         - not_null
+      
+      - name: id_conta_contabil
+        description: 'identificador do cliente'
+        data_type: INTEGER
+        tests:
+          - not_null
+        
+      - name: id_cliente
+        description: 'identificador do cliente'
+        data_type: 'INTEGER'
+        tests: 
+          - not_null
+      
+      - name: tipo_lancamento
+        description: 'indica se o lancamento corresponde a um titulo ou a uma movimentacao avulsa'
+        data_type: TEXT
+      
+      - name: tipo_fluxo
+        description: 'indica se o registro faz e um fluxo realizado ou futuro'
+        data_type: TEXT
+
+  - name: int_saldo_inicial
+    description: 'tabela que cotem o saldo inicial de caixa'
+    columns:
+          - name: data_inicial
+            description: 'data do saldo de caixa'
+            data_type: DATE
+
+          - name: saldo
+            description: 'saldo inicial de caixa'
+            data_type: DECIMAL
+            tests:
+             - valores_positivos
+
